@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Práctica Cloud con API de Clima</title>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f3f5f9;
+      margin: 0;
+      padding: 0;
+    }
+
+    .contenedor {
+      max-width: 700px;
+      margin: 60px auto;
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.12);
+    }
+
+    h1 {
+      text-align: center;
+      color: #1f3c88;
+    }
+
+    p {
+      color: #333;
+      text-align: center;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      font-size: 16px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      box-sizing: border-box;
+    }
+
+    button {
+      width: 100%;
+      margin-top: 15px;
+      padding: 12px;
+      background: #1f3c88;
+      color: white;
+      border: none;
+      font-size: 16px;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #14285c;
+    }
+
+    .respuesta {
+      margin-top: 25px;
+      padding: 15px;
+      background: #eef2ff;
+      border-radius: 8px;
+      white-space: pre-wrap;
+      min-height: 100px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="contenedor">
+    <h1>Aplicación Cloud con API de Clima</h1>
+
+    <p>Escribe una ciudad para consultar el clima usando una API real en la nube.</p>
+
+    <input id="ciudad" placeholder="Ejemplo: Tampico, Madero, Monterrey, CDMX o Guadalajara">
+
+    <button onclick="consultarClima()">Consultar clima</button>
+
+    <div class="respuesta" id="respuesta">
+      Aquí aparecerá la respuesta de la API.
+    </div>
+  </div>
+
+  <script>
+    async function consultarClima() {
+      const ciudad = document.getElementById("ciudad").value;
+      const respuestaDiv = document.getElementById("respuesta");
+
+      respuestaDiv.textContent = "Consultando API externa en la nube...";
+
+      try {
+        const response = await fetch("/api/clima", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ ciudad: ciudad })
+        });
+
+        const data = await response.json();
+
+        if (data.error) {
+          respuestaDiv.textContent = "Error: " + data.error;
+        } else {
+          respuestaDiv.textContent =
+            "Petición exitosa\n\n" +
+            "Ciudad: " + data.ciudad + "\n" +
+            "Temperatura: " + data.temperatura + " °C\n" +
+            "Velocidad del viento: " + data.viento + " km/h\n" +
+            "Dirección del viento: " + data.direccionViento + "°\n" +
+            "Código de clima: " + data.codigoClima + "\n" +
+            "Hora de medición: " + data.hora;
+        }
+
+      } catch (error) {
+        respuestaDiv.textContent = "Error al conectar con el servidor.";
+      }
+    }
+  </script>
+
+</body>
+</html>
